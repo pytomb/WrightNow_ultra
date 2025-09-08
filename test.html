@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Page - AI Golf Coach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">AI Golf Coach - API Test Page</h1>
+
+        <!-- API Status -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">API Status</h2>
+            <button id="test-status-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                Check API Status
+            </button>
+            <pre id="status-result" class="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto"></pre>
+        </div>
+
+        <!-- Caddie Advice Test -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Test Caddie Advice</h2>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <input id="test-name" type="text" placeholder="Player Name" value="Test Player" class="border p-2 rounded">
+                <select id="test-course" class="border p-2 rounded">
+                    <option value="Chateau">Chateau Course</option>
+                    <option value="Woodlands">Woodlands Course</option>
+                </select>
+                <input id="test-hole" type="text" placeholder="Hole Number" value="6" class="border p-2 rounded">
+                <input id="test-distance" type="text" placeholder="Distance (yards)" value="145" class="border p-2 rounded">
+                <input id="test-club" type="text" placeholder="Club" value="8-iron" class="border p-2 rounded col-span-2">
+            </div>
+            <button id="test-caddie-btn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                Test Caddie Advice
+            </button>
+            <div id="caddie-avatar-preview" class="mt-4 hidden">
+                <h4 class="font-semibold mb-2">HeyGen Avatar Preview:</h4>
+                <video id="caddie-avatar-video" controls class="w-full max-w-md rounded">
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <pre id="caddie-result" class="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto"></pre>
+        </div>
+
+        <!-- Swing Analysis Test -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Test Swing Analysis</h2>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <input id="swing-name" type="text" placeholder="Player Name" value="Test Player" class="border p-2 rounded">
+                <select id="swing-course" class="border p-2 rounded">
+                    <option value="Chateau">Chateau Course</option>
+                    <option value="Woodlands">Woodlands Course</option>
+                </select>
+                <input id="swing-hole" type="text" placeholder="Hole Number" value="6" class="border p-2 rounded">
+            </div>
+            <button id="test-swing-btn" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                Test Swing Analysis
+            </button>
+            <div id="swing-avatar-preview" class="mt-4 hidden">
+                <h4 class="font-semibold mb-2">HeyGen Avatar Preview:</h4>
+                <video id="swing-avatar-video" controls class="w-full max-w-md rounded">
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <pre id="swing-result" class="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto"></pre>
+        </div>
+
+        <!-- Direct API Test -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Direct API Test Endpoints</h2>
+            <div class="space-y-2">
+                <button id="direct-caddie-test" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded mr-2">
+                    Test /api/test-caddie
+                </button>
+                <button id="direct-swing-test" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                    Test /api/test-swing
+                </button>
+            </div>
+            <pre id="direct-result" class="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto"></pre>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center">
+            <a href="/" class="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold">
+                Back to Main App
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to display results
+        function displayResult(elementId, data) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        // Test API status
+        document.getElementById('test-status-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/test');
+                const data = await response.json();
+                displayResult('status-result', data);
+            } catch (error) {
+                displayResult('status-result', { error: error.message });
+            }
+        });
+
+        // Test caddie advice
+        document.getElementById('test-caddie-btn').addEventListener('click', async () => {
+            const data = {
+                userName: document.getElementById('test-name').value,
+                course: document.getElementById('test-course').value,
+                hole: document.getElementById('test-hole').value,
+                distance: document.getElementById('test-distance').value,
+                club: document.getElementById('test-club').value
+            };
+
+            try {
+                console.log('Sending caddie test request:', data);
+                const response = await fetch('/api/caddie-advice', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                displayResult('caddie-result', result);
+
+                // Handle HeyGen avatar
+                if (result.avatarVideoUrl && result.avatarVideoUrl !== 'https://example.com/avatar-video.mp4') {
+                    const videoElement = document.getElementById('caddie-avatar-video');
+                    const sourceElement = videoElement.querySelector('source');
+                    sourceElement.src = result.avatarVideoUrl;
+                    videoElement.load();
+                    document.getElementById('caddie-avatar-preview').classList.remove('hidden');
+                }
+            } catch (error) {
+                displayResult('caddie-result', { error: error.message });
+            }
+        });
+
+        // Test swing analysis
+        document.getElementById('test-swing-btn').addEventListener('click', async () => {
+            const data = {
+                userName: document.getElementById('swing-name').value,
+                course: document.getElementById('swing-course').value,
+                hole: document.getElementById('swing-hole').value
+            };
+
+            try {
+                console.log('Sending swing test request:', data);
+                const response = await fetch('/api/swing-analysis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                displayResult('swing-result', result);
+
+                // Handle HeyGen avatar
+                if (result.avatarVideoUrl && result.avatarVideoUrl !== 'https://example.com/avatar-video.mp4') {
+                    const videoElement = document.getElementById('swing-avatar-video');
+                    const sourceElement = videoElement.querySelector('source');
+                    sourceElement.src = result.avatarVideoUrl;
+                    videoElement.load();
+                    document.getElementById('swing-avatar-preview').classList.remove('hidden');
+                }
+            } catch (error) {
+                displayResult('swing-result', { error: error.message });
+            }
+        });
+
+        // Direct API tests
+        document.getElementById('direct-caddie-test').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/test-caddie', { method: 'POST' });
+                const result = await response.json();
+                displayResult('direct-result', result);
+            } catch (error) {
+                displayResult('direct-result', { error: error.message });
+            }
+        });
+
+        document.getElementById('direct-swing-test').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/test-swing', { method: 'POST' });
+                const result = await response.json();
+                displayResult('direct-result', result);
+            } catch (error) {
+                displayResult('direct-result', { error: error.message });
+            }
+        });
+
+        // Auto-check status on page load
+        window.addEventListener('load', () => {
+            document.getElementById('test-status-btn').click();
+        });
+    </script>
+</body>
+</html>

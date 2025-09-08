@@ -1,0 +1,63 @@
+Of course. Here is a comprehensive guide with the data for every hole on both the **Chateau** and **Woodlands** courses. This will ensure you're prepared with a solid plan, no matter where you're assigned.
+
+### **Chateau Course: Hole-by-Hole Analysis**
+
+This is a par-71 championship course known for its complexity. Players here will likely be serious about their game and appreciate a technical analysis.
+
+| Hole | Par | Gold Tees (Yards) | Green Tees (Yards) | White Tees (Yards) | Strategic Notes |
+| :--- | :-: | :---: | :---: | :---: | :--- |
+| **1** | 4 | 380 | 344 | 322 | **Good Option.** A straightforward starting hole. Players are fresh and excited. A great way to make a first impression. |
+| **2** | 4 | 413 | 383 | 369 | **Decent Option.** A long Par 4. Players will be hitting their driver, which is a great club to analyze. |
+| **3** | 5 | 547 | 519 | 483 | **Avoid.** This is a long Par 5. The pace of play can be slow here, and you don't want to be seen as a delay. |
+| **4** | 4 | 423 | 415 | 358 | **Decent Option.** A challenging Par 4. A good swing is crucial here, making your AI coach very relevant. |
+| **5** | 4 | 442 | 405 | 386 | **Decent Option.** Another long Par 4. Great opportunity to capture a driver swing. |
+| **6** | 3 | 181 | 160 | 136 | **Excellent Option.** A classic Par 3. This is a prime spot as groups often wait for the green to clear. |
+| **7** | 4 | 420 | 375 | 352 | **Decent Option.** A solid Par 4 with water in play. Players will be focused on a good tee shot. |
+| **8** | 3 | 200 | 185 | 155 | **Excellent Option.** A longer Par 3, which is another perfect spot to engage with players while they wait. |
+| **9** | 5 | 577 | 553 | 502 | **Avoid.** Another long Par 5. Avoid this hole to prevent any disruption to the flow of the game. |
+| **10** | 4 | 397 | 375 | 325 | **Good Option.** The start of the back nine. Players are refocused and ready for a strong finish. |
+| **11** | 4 | 415 | 368 | 318 | **Decent Option.** A challenging Par 4 where a good drive sets up the hole. |
+| **12** | 3 | 194 | 162 | 149 | **Excellent Option.** Another great Par 3. The perfect natural pause in the round. |
+| **13** | 4 | 444 | 393 | 358 | **Decent Option.** A long and difficult Par 4. Your AI coach could be a welcome distraction. |
+| **14** | 4 | 428 | 400 | 381 | **Decent Option.** A solid Par 4. Good for capturing driver swings. |
+| **15** | 5 | 566 | 536 | 494 | **Avoid.** The last Par 5 on the course. Players are focused on finishing strong. |
+| **16** | 3 | 176 | 159 | 121 | **Excellent Option.** The final Par 3. A fantastic spot to create a lasting impression before the round ends. |
+| **17** | 4 | 372 | 328 | 295 | **Decent Option.** A shorter Par 4, but still a good opportunity to analyze a tee shot. |
+| **18** | 4 | 455 | 424 | 396 | **Good Option.** The finishing hole. High energy and a great place for a final, memorable interaction. |
+
+---
+
+### **Woodlands Course: Hole-by-Hole Analysis**
+
+This is a par-72 course known for its scenic beauty. The vibe here may be a bit more relaxed, making for a very receptive audience.
+
+| Hole | Par | Gold Tees (Yards) | Green Tees (Yards) | White Tees (Yards) | Strategic Notes |
+| :--- | :-: | :---: | :---: | :---: | :--- |
+| **1** | 5 | 560 | 543 | 523 | **Avoid.** Starting with a Par 5 is tough. Let the players get into their rhythm. |
+| **2** | 3 | 209 | 189 | 172 | **Excellent Option.** A Par 3 early in the round is a fantastic place to start. |
+| **3** | 4 | 381 | 358 | 326 | **Good Option.** A straightforward Par 4. Players will be in a good flow. |
+| **4** | 4 | 398 | 379 | 355 | **Good Option.** A solid Par 4 for analyzing a driver or fairway wood. |
+| **5** | 4 | 351 | 327 | 295 | **Decent Option.** A shorter Par 4. Might see more irons off the tee, which is still great to analyze. |
+| **6** | 3 | 210 | 182 | 171 | **Excellent Option.** A long Par 3 that is a perfect spot for your activation. |
+| **7** | 4 | 416 | 403 | 384 | **Good Option.** A challenging hole where a good tee shot is key. |
+| **8** | 5 | 536 | 508 | 484 | **Avoid.** This is a Par 5. It's best to let the groups play through without interruption. |
+| **9** | 4 | 370 | 346 | 313 | **Good Option.** The end of the front nine is a great place to engage with players. |
+| **10** | 5 | 452 | 448 | 419 | **Avoid.** Starting the back nine with a Par 5 is another reason to steer clear. |
+| **11** | 4 | 436 | 400 | 364 | **Good Option.** A long Par 4 where players will be hitting their driver. |
+| **12** | 4 | 387 | 373 | 351 | **Good Option.** A solid mid-length Par 4. |
+| **13** | 3 | 192 | 164 | 134 | **Excellent Option.** Another perfectly placed Par 3 for your AI swing analysis. |
+| **14** | 4 | 412 | 397 | 377 | **Good Option.** A challenging hole that requires a good tee shot. |
+| **15** | 5 | 511 | 490 | 465 | **Avoid.** The last Par 5 on the course. Let the players focus on their game. |
+| **16** | 4 | 339 | 312 | 301 | **Decent Option.** A shorter Par 4, but still a good spot for an interaction. |
+| **17** | 3 | 171 | 150 | 135 | **Excellent Option.** The final Par 3 and one of the best holes to be on for maximum impact. |
+| **18** | 4 | 407 | 386 | 347 | **Good Option.** The finishing hole is always a great place for a memorable brand experience. |
+
+### **Summary & Quick Reference**
+
+* **Best Options (The "No-Brainers"):** Any **Par 3** on either course. These are the ideal locations due to the natural pause in play.
+    * **Chateau:** Holes 6, 8, 12, 16
+    * **Woodlands:** Holes 2, 6, 13, 17
+* **Good Options (High-Impact Alternatives):** The starting and finishing holes (**1, 10, 18** on both courses) are also great choices. The energy is high, and your activation will be a memorable part of the beginning or end of their round.
+* **Holes to Avoid (Potential for Disruption):** All **Par 5s**. These holes take the longest to play, and setting up here could make you seem like a delay.
+    * **Chateau:** Holes 3, 9, 15
+    * **Woodlands:** Holes 1, 8, 10, 15

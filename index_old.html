@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Golf Coach - Wright Now Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Suppress Tailwind CDN production warning for development
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('cdn.tailwindcss.com should not be used in production')) {
+                return; // Suppress this specific warning
+            }
+            originalWarn.apply(console, args); // Allow other warnings
+        };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .app-bg {
+            background-image: url('https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=2070&auto=format&fit=crop');
+        }
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .screen.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .skeleton-overlay {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 3s ease-in-out forwards;
+        }
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="app-bg bg-cover bg-center h-screen flex items-center justify-center p-4">
+
+    <!-- Mobile Phone Frame -->
+    <div class="w-full max-w-md h-[90vh] max-h-[800px] bg-gray-900/80 backdrop-blur-xl rounded-[40px] shadow-2xl p-4 flex flex-col overflow-hidden ring-4 ring-gray-600/50">
+
+        <!-- Header with Logo -->
+        <div class="flex justify-center mb-4">
+            <img src="Wright-Now-Solutions-Web-Logo-min.png" alt="Wright Now Solutions Logo" class="logo">
+        </div>
+
+        <!-- Screen Content Area -->
+        <div id="screen-container" class="flex-grow relative text-white">
+
+            <!-- Phase 1: Welcome Screen -->
+            <div id="welcome-screen" class="screen active flex-col h-full items-center justify-center text-center p-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-teal-400"><path d="m12 18-3-3 3-3 3 3-3 3Z"/><path d="m18 12-3-3 3-3 3 3-3 3Z"/><path d="m6 12-3-3 3-3 3 3-3 3Z"/><path d="m12 6-3-3 3-3 3 3-3 3Z"/></svg>
+                <h1 class="text-2xl font-bold mt-4">Meet Your AI Golf Strategist</h1>
+                <p class="text-gray-300 mt-2">Your next shot, perfected. Get instant, data-driven analysis from tee to green.</p>
+                <div class="mt-8 p-4 bg-gray-800 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 256 256" class="mx-auto"><path fill="white" d="M140 100v16a12 12 0 0 1-24 0v-16a12 12 0 0 1 24 0Zm52-52v28h-28a12 12 0 0 0-12 12v28h-16v-16a12 12 0 0 0-12-12h-28v-28a12 12 0 0 0-12-12H72V48a12 12 0 0 0-24 0v24H24a12 12 0 0 0 0 24h24v28h16a12 12 0 0 0 12-12v-16h28v16h-16v28a12 12 0 0 0 12 12h28v16h16a12 12 0 0 0 12-12v-28h28v-16a12 12 0 0 0 12-12V96a12 12 0 0 0 24 0V72h24a12 12 0 0 0 0-24h-24V24a12 12 0 0 0-24 0v24h-28Zm-52 84h-28a12 12 0 0 0-12 12v28h16v16h28v-28a12 12 0 0 0-12-12Zm-16 56a12 12 0 0 0 12 12h24a12 12 0 0 0 0-24h-24a12 12 0 0 0-12 12Zm112-96h-28v16h-16v16h28a12 12 0 0 0 12-12v-28a12 12 0 0 0-12-12Z"/></svg>
+                </div>
+                <p class="text-gray-400 text-sm mt-4">Scan the QR Code to begin</p>
+                <button id="start-btn" class="w-full mt-6 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-full transition-transform hover:scale-105 shadow-lg shadow-teal-500/30">Start Coaching Session</button>
+            </div>
+
+            <!-- Phase 2: Name Input -->
+            <div id="name-screen" class="screen flex-col h-full p-4 justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <button id="name-back-btn" class="text-teal-400 hover:text-teal-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <img src="Golf Coach.png" class="w-12 h-12 rounded-full border-2 border-teal-400 object-cover" alt="AI Coach Avatar">
+                    <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none">
+                        <p class="font-semibold">Hi there, I'm your AI Coach!</p>
+                        <p class="text-gray-300">Great day for golf. Before we dial you in, what's your name?</p>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <input id="name-input" type="text" placeholder="Enter your name..." class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-4 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-center text-lg">
+                    <button id="name-next-btn" class="w-full mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-full transition-transform hover:scale-105 shadow-lg shadow-teal-500/30">Next</button>
+                </div>
+            </div>
+
+            <!-- Phase 2.5: Contact Info -->
+            <div id="contact-screen" class="screen flex-col h-full p-4 justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <button id="contact-back-btn" class="text-teal-400 hover:text-teal-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <img src="Golf Coach.png" class="w-12 h-12 rounded-full border-2 border-teal-400 object-cover" alt="AI Coach Avatar">
+                    <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none">
+                        <p class="font-semibold">Nice to meet you, <span id="contact-name"></span>!</p>
+                        <p class="text-gray-300">To personalize your experience, may I have your phone and email?</p>
+                    </div>
+                </div>
+                <div class="w-full space-y-4">
+                    <input id="phone-input" type="tel" placeholder="Phone number..." class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-4 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg">
+                    <input id="email-input" type="email" placeholder="Email address..." class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-4 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg">
+                    <div class="flex items-center">
+                        <input id="consent-checkbox" type="checkbox" class="mr-2">
+                        <label for="consent-checkbox" class="text-sm text-gray-300">I consent to data collection for personalized coaching.</label>
+                    </div>
+                    <button id="contact-next-btn" class="w-full mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-full transition-transform hover:scale-105 shadow-lg shadow-teal-500/30">Next</button>
+                </div>
+            </div>
+
+            <!-- Phase 2.7: Course Selection -->
+            <div id="course-screen" class="screen flex-col h-full p-4 justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <button id="course-back-btn" class="text-teal-400 hover:text-teal-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <img src="Golf Coach.png" class="w-12 h-12 rounded-full border-2 border-teal-400 object-cover" alt="AI Coach Avatar">
+                    <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none">
+                        <p class="font-semibold">Which course are you playing today?</p>
+                        <p class="text-gray-300">This helps me give you spot-on advice.</p>
+                    </div>
+                </div>
+                <div class="w-full space-y-4">
+                    <button id="chateau-btn" class="w-full text-left p-6 bg-gray-800/80 hover:bg-gray-700 rounded-2xl border border-gray-600 flex items-center space-x-4 transition-transform hover:scale-105">
+                        <div>
+                            <p class="font-bold text-lg">Chateau Course</p>
+                            <p class="text-sm text-gray-300">Par 71, challenging layout.</p>
+                        </div>
+                    </button>
+                    <button id="woodlands-btn" class="w-full text-left p-6 bg-gray-800/80 hover:bg-gray-700 rounded-2xl border border-gray-600 flex items-center space-x-4 transition-transform hover:scale-105">
+                        <div>
+                            <p class="font-bold text-lg">Woodlands Course</p>
+                            <p class="text-sm text-gray-300">Par 72, scenic beauty.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Phase 2.8: Hole Selection -->
+            <div id="hole-screen" class="screen flex-col h-full p-4 justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <button id="hole-back-btn" class="text-teal-400 hover:text-teal-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <img src="Golf Coach.png" class="w-12 h-12 rounded-full border-2 border-teal-400 object-cover" alt="AI Coach Avatar">
+                    <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none">
+                        <p class="font-semibold">Which hole are you on?</p>
+                        <p class="text-gray-300">Select your current hole for personalized tips.</p>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <select id="hole-select" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-4 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg">
+                        <option value="">Select Hole</option>
+                        <!-- Holes will be populated dynamically -->
+                    </select>
+                    <button id="hole-next-btn" class="w-full mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-full transition-transform hover:scale-105 shadow-lg shadow-teal-500/30">Next</button>
+                </div>
+            </div>
+
+            <!-- Phase 3: Choice Screen -->
+            <div id="choice-screen" class="screen flex-col h-full p-4 justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <button id="choice-back-btn" class="text-teal-400 hover:text-teal-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <img src="Golf Coach.png" class="w-12 h-12 rounded-full border-2 border-teal-400 object-cover" alt="AI Coach Avatar">
+                    <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none">
+                        <p id="choice-welcome-text" class="font-semibold">Alright, let's take a look.</p>
+                        <p class="text-gray-300">Are we analyzing your swing or planning your shot?</p>
+                    </div>
+                </div>
+                <div class="w-full space-y-4">
+                    <button id="plan-shot-btn" class="w-full text-left p-6 bg-gray-800/80 hover:bg-gray-700 rounded-2xl border border-gray-600 flex items-center space-x-4 transition-transform hover:scale-105">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-400"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                        <div>
+                            <p class="font-bold text-lg">Plan My Shot</p>
+                            <p class="text-sm text-gray-300">AI Caddie for club & distance.</p>
+                        </div>
+                    </button>
+                    <button id="analyze-swing-btn" class="w-full text-left p-6 bg-gray-800/80 hover:bg-gray-700 rounded-2xl border border-gray-600 flex items-center space-x-4 transition-transform hover:scale-105">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-400"><path d="M21.174 6.812a1 1 0 0 0-1.28.32l-3.58 5.404a.5.5 0 0 1-.82.126l-2.43-2.43a1 1 0 0 0-1.638-.028l-4.295 6.136a1 1 0 0 0 .153 1.41l1.41 1.41a1 1 0 0 0 1.41 0l4.16-4.16a.5.5 0 0 1 .746-.038l2.429 2.429a1 1 0 0 0 1.638.028l3.75-5.624a1 1 0 0 0-.25-1.42z"></path><circle cx="5" cy="5" r="3"></circle></svg>
+                        <div>
+                            <p class="font-bold text-lg">Analyze My Swing</p>
+                            <p class="text-sm text-gray-300">AI Coach for instant feedback.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Phase 3a: Caddie Input -->
+            <div id="caddie-input-screen" class="screen flex-col h-full p-4 justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <button id="caddie-back-btn" class="text-teal-400 hover:text-teal-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <img src="Golf Coach.png" class="w-12 h-12 rounded-full border-2 border-teal-400 object-cover" alt="AI Coach Avatar">
+                    <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none">
+                        <p class="font-semibold">Great choice.</p>
+                        <p class="text-gray-300">Tell me about the shot. What's the distance and what club are you thinking?</p>
+                    </div>
+                </div>
+                <div class="w-full space-y-4">
+                    <div class="relative">
+                        <input id="distance-input" type="text" placeholder="Distance (e.g., 145 yards)" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-4 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg pr-12">
+                        <button id="voice-distance-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-teal-400 hover:text-teal-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <input id="club-input" type="text" placeholder="Club choice (e.g., 8-iron)" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-4 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg pr-12">
+                        <button id="voice-club-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-teal-400 hover:text-teal-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        </button>
+                    </div>
+                    <button id="caddie-analyze-btn" class="w-full mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-full transition-transform hover:scale-105 shadow-lg shadow-teal-500/30">Get Caddie Advice</button>
+                </div>
+            </div>
+
+            <!-- Phase 3b: Swing Input -->
+            <div id="swing-input-screen" class="screen flex-col h-full p-4 justify-between items-center text-center">
+                <div class="flex justify-between items-center w-full mb-4">
+                    <button id="swing-back-btn" class="text-teal-400 hover:text-teal-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="w-full">
+                    <div class="flex items-start space-x-3">
+                        <img src="Golf Coach.png" class="w-12 h-12 rounded-full border-2 border-teal-400 object-cover" alt="AI Coach Avatar">
+                        <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none text-left">
+                            <p class="font-semibold">Perfect. Let's see it.</p>
+                            <p class="text-gray-300">Prop your phone up, and record a 3-second practice swing when you're ready.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full aspect-square bg-gray-800 rounded-2xl border-2 border-dashed border-gray-600 flex items-center justify-center flex-col">
+                    <video id="camera-preview" autoplay muted playsinline class="w-full h-full object-cover rounded-2xl"></video>
+                    <p id="camera-placeholder" class="text-gray-400 absolute">Camera View Here</p>
+                </div>
+                <button id="record-swing-btn" class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full transition-transform hover:scale-105 flex items-center justify-center space-x-2">
+                    <div class="w-4 h-4 rounded-full bg-white"></div>
+                    <span>Record Swing</span>
+                </button>
+            </div>
+
+            <!-- Phase 4a: Caddie Analyzing -->
+            <div id="caddie-analyzing-screen" class="screen flex-col h-full p-8 justify-center items-center text-center space-y-4">
+                <div class="animate-pulse text-teal-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+                </div>
+                <p class="text-xl font-semibold">Analyzing the shot...</p>
+                <p class="text-gray-300">Factoring in today's wind conditions and the green's layout... Running a thousand simulations...</p>
+            </div>
+
+            <!-- Phase 4b: Swing Analyzing -->
+            <div id="swing-analyzing-screen" class="screen flex-col h-full p-4 justify-center items-center text-center">
+                <p class="text-xl font-semibold mb-4">Analyzing your kinematic sequence...</p>
+                <div class="w-full aspect-[9/16] bg-gray-800 rounded-2xl relative overflow-hidden">
+                    <video id="swing-video" autoplay muted loop playsinline class="w-full h-full object-cover">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-golfer-hitting-the-ball-on-a-sunny-day-4831-large.mp4" type="video/mp4">
+                    </video>
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 200 355">
+                        <!-- Mock skeleton overlay -->
+                        <g class="skeleton-overlay" stroke="rgba(50, 205, 188, 0.8)" stroke-width="3" fill="none" stroke-linecap="round">
+                            <circle cx="98" cy="60" r="10" /> <!-- Head -->
+                            <line x1="98" y1="70" x2="98" y2="130" /> <!-- Spine -->
+                            <line x1="98" y1="85" x2="75" y2="110" /> <!-- Left arm -->
+                            <line x1="75" y1="110" x2="60" y2="90" /> <!-- Left forearm -->
+                            <line x1="98" y1="85" x2="130" y2="100" /> <!-- Right arm -->
+                            <line x1="130" y1="100" x2="145" y2="125" /> <!-- Right forearm -->
+                            <line x1="98" y1="130" x2="80" y2="180" /> <!-- Left leg -->
+                            <line x1="80" y1="180" x2="75" y2="240" /> <!-- Left shin -->
+                            <line x1="98" y1="130" x2="115" y2="180" /> <!-- Right leg -->
+                            <line x1="115" y1="180" x2="120" y2="240" /> <!-- Right shin -->
+                        </g>
+                    </svg>
+                </div>
+                <p class="text-gray-300 mt-4">Measuring shoulder turn... Checking club path...</p>
+            </div>
+
+            <!-- Phase 5a: Caddie Result -->
+            <div id="caddie-result-screen" class="screen flex-col h-full p-4 justify-between">
+                <div class="flex items-start space-x-3">
+                    <div id="caddie-avatar-container" class="w-12 h-12 rounded-full border-2 border-teal-400 overflow-hidden bg-gray-700 flex items-center justify-center">
+                        <img src="Golf Coach.png" class="w-full h-full object-cover" alt="AI Coach Avatar">
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none">
+                        <p class="font-semibold" id="caddie-result-name">Here's my take:</p>
+                        <p class="text-gray-300" id="caddie-advice">At 145 yards with a slight crosswind, a smooth 8-iron is your highest percentage play. Focus on a confident, balanced finish.</p>
+                    </div>
+                </div>
+                <!-- Digital Caddie Card -->
+                <div class="w-full bg-gray-800 p-4 rounded-2xl border border-gray-600">
+                    <h3 class="text-lg font-bold text-teal-400">Digital Caddie Card</h3>
+                    <div class="mt-2 space-y-1 text-sm">
+                        <p><span class="font-semibold text-gray-400">Player:</span> <span id="caddie-card-name">Alex</span></p>
+                        <p><span class="font-semibold text-gray-400">Shot:</span> <span id="caddie-card-shot">145 yards, Hole 12</span></p>
+                        <p><span class="font-semibold text-gray-400">Recommendation:</span> <span id="caddie-card-rec">Smooth 8-iron</span></p>
+                        <p><span class="font-semibold text-gray-400">Key Thought:</span> <span id="caddie-card-tip">Confident, balanced finish.</span></p>
+                    </div>
+                </div>
+                <!-- CTA -->
+                <div class="w-full text-center p-4 bg-teal-900/50 rounded-2xl">
+                    <p class="font-bold">From Golf Swings to Business Wins.</p>
+                    <p class="text-sm text-teal-200 mt-1">Imagine AI coaching your team like this. Scan to see how we build personalized AI for companies.</p>
+                    <button class="mt-3 bg-white text-teal-700 font-bold py-2 px-4 rounded-full text-sm">Learn More</button>
+                </div>
+            </div>
+
+            <!-- Phase 5b: Swing Result -->
+            <div id="swing-result-screen" class="screen flex-col h-full p-4 justify-around">
+                <div class="flex items-start space-x-3">
+                    <div id="swing-avatar-container" class="w-12 h-12 rounded-full border-2 border-teal-400 overflow-hidden bg-gray-700 flex items-center justify-center">
+                        <img src="Golf Coach.png" class="w-full h-full object-cover" alt="AI Coach Avatar">
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-xl rounded-tl-none">
+                        <p class="font-semibold" id="swing-result-name">Okay, I've analyzed your swing.</p>
+                        <p class="text-gray-300" id="swing-feedback">Your tempo is solid, but I noticed your head moves slightly off the ball on your backswing. Let's look.</p>
+                    </div>
+                </div>
+                <!-- Telestrator Moment -->
+                <div class="w-full aspect-video bg-gray-800 rounded-2xl relative overflow-hidden">
+                    <video id="swing-result-video" autoplay muted loop playsinline class="w-full h-full object-cover">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-golfer-hitting-the-ball-on-a-sunny-day-4831-large.mp4" type="video/mp4">
+                    </video>
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 225">
+                        <!-- Mock telestrator overlay -->
+                        <circle cx="195" cy="45" r="18" fill="none" stroke="rgba(255, 255, 0, 0.7)" stroke-width="2" class="skeleton-overlay" />
+                        <path d="M 195,45 C 225,45 235,60 235,75" fill="none" stroke="rgba(255, 255, 0, 0.7)" stroke-width="2" class="skeleton-overlay" style="animation-delay: 1s;" />
+                        <text x="240" y="80" fill="yellow" font-size="10" font-family="Inter">Head movement</text>
+                    </svg>
+                </div>
+                <!-- CTA -->
+                <div class="w-full text-center p-4 bg-teal-900/50 rounded-2xl">
+                    <p class="font-bold">From Golf Swings to Business Wins.</p>
+                    <p class="text-sm text-teal-200 mt-1">Imagine AI coaching your team like this. Scan to see how we build personalized AI for companies.</p>
+                    <button class="mt-3 bg-white text-teal-700 font-bold py-2 px-4 rounded-full text-sm">Learn More</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const screens = document.querySelectorAll('.screen');
+            const container = document.getElementById('screen-container');
+            const appState = {
+                userName: '',
+                phone: '',
+                email: '',
+                course: '',
+                hole: '',
+                consent: false
+            };
+
+            const showScreen = (screenId) => {
+                screens.forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                const activeScreen = document.getElementById(screenId);
+                if (activeScreen) {
+                    activeScreen.classList.add('active');
+                }
+            };
+
+            // Populate holes based on course
+            const populateHoles = (course) => {
+                const holeSelect = document.getElementById('hole-select');
+                holeSelect.innerHTML = '<option value="">Select Hole</option>';
+                for (let i = 1; i <= 18; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `Hole ${i}`;
+                    holeSelect.appendChild(option);
+                }
+            };
+
+            // Camera access
+            const startCamera = async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    const video = document.getElementById('camera-preview');
+                    video.srcObject = stream;
+                    document.getElementById('camera-placeholder').style.display = 'none';
+                } catch (error) {
+                    console.error('Error accessing camera:', error);
+                }
+            };
+
+            // Event Listeners
+            // Back button event listeners
+            document.getElementById('name-back-btn').addEventListener('click', () => showScreen('welcome-screen'));
+            document.getElementById('contact-back-btn').addEventListener('click', () => showScreen('name-screen'));
+            document.getElementById('course-back-btn').addEventListener('click', () => showScreen('contact-screen'));
+            document.getElementById('hole-back-btn').addEventListener('click', () => showScreen('course-screen'));
+            document.getElementById('choice-back-btn').addEventListener('click', () => showScreen('hole-screen'));
+            document.getElementById('caddie-back-btn').addEventListener('click', () => showScreen('choice-screen'));
+            document.getElementById('swing-back-btn').addEventListener('click', () => showScreen('choice-screen'));
+
+            document.getElementById('start-btn').addEventListener('click', () => showScreen('name-screen'));
+
+            document.getElementById('name-next-btn').addEventListener('click', () => {
+                const nameInput = document.getElementById('name-input');
+                if (nameInput.value.trim() !== '') {
+                    appState.userName = nameInput.value.trim();
+                    document.getElementById('contact-name').textContent = appState.userName;
+                    showScreen('contact-screen');
+                }
+            });
+
+            document.getElementById('contact-next-btn').addEventListener('click', () => {
+                const phone = document.getElementById('phone-input').value.trim();
+                const email = document.getElementById('email-input').value.trim();
+                const consent = document.getElementById('consent-checkbox').checked;
+                if (phone && email && consent) {
+                    appState.phone = phone;
+                    appState.email = email;
+                    appState.consent = consent;
+                    showScreen('course-screen');
+                } else {
+                    alert('Please fill in all fields and consent to continue.');
+                }
+            });
+
+            document.getElementById('chateau-btn').addEventListener('click', () => {
+                appState.course = 'Chateau';
+                populateHoles('Chateau');
+                showScreen('hole-screen');
+            });
+
+            document.getElementById('woodlands-btn').addEventListener('click', () => {
+                appState.course = 'Woodlands';
+                populateHoles('Woodlands');
+                showScreen('hole-screen');
+            });
+
+            document.getElementById('hole-next-btn').addEventListener('click', () => {
+                const hole = document.getElementById('hole-select').value;
+                if (hole) {
+                    appState.hole = hole;
+                    document.getElementById('choice-welcome-text').textContent = `Alright, ${appState.userName}. Let's take a look.`;
+                    showScreen('choice-screen');
+                }
+            });
+
+            document.getElementById('plan-shot-btn').addEventListener('click', async () => {
+                // Auto-populate distance field with course data
+                try {
+                    const response = await fetch('/api/course-data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            course: appState.course,
+                            hole: appState.hole
+                        })
+                    });
+
+                    if (response.ok) {
+                        const courseData = await response.json();
+                        if (courseData.distance) {
+                            document.getElementById('distance-input').value = courseData.distance;
+                            document.getElementById('distance-input').placeholder = `Distance (${courseData.distance} yards from white tees)`;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching course data:', error);
+                }
+
+                showScreen('caddie-input-screen');
+            });
+            document.getElementById('analyze-swing-btn').addEventListener('click', () => {
+                startCamera();
+                showScreen('swing-input-screen');
+            });
+
+            document.getElementById('caddie-analyze-btn').addEventListener('click', async () => {
+                const distance = document.getElementById('distance-input').value;
+                const club = document.getElementById('club-input').value;
+                if (distance && club) {
+                    showScreen('caddie-analyzing-screen');
+                    // Simulate API call
+                    setTimeout(async () => {
+                        try {
+                            // Add timeout to fetch request
+                            const controller = new AbortController();
+                            const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout (faster with gpt-4o-mini)
+
+                            try {
+                                const response = await fetch('/api/caddie-advice', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ ...appState, distance, club }),
+                                    signal: controller.signal
+                                });
+
+                                clearTimeout(timeoutId);
+
+                                if (!response.ok) {
+                                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                                }
+
+                                const data = await response.json();
+
+                                if (data.error) {
+                                    throw new Error(data.message || data.error);
+                                }
+
+                                document.getElementById('caddie-result-name').textContent = `Here's my take, ${appState.userName}:`;
+                                document.getElementById('caddie-advice').textContent = data.advice;
+                                document.getElementById('caddie-card-name').textContent = appState.userName;
+                                document.getElementById('caddie-card-shot').textContent = `${distance} yards, Hole ${appState.hole}`;
+                                document.getElementById('caddie-card-rec').textContent = data.recommendation;
+                                document.getElementById('caddie-card-tip').textContent = data.keyThought;
+
+                                // Handle HeyGen avatar video
+                                if (data.avatarVideoUrl && data.avatarVideoUrl !== 'https://example.com/avatar-video.mp4') {
+                                    const avatarContainer = document.getElementById('caddie-avatar-container');
+                                    avatarContainer.innerHTML = `
+                                        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+                                            <source src="${data.avatarVideoUrl}" type="video/mp4">
+                                            <img src="Golf Coach.png" class="w-full h-full object-cover" alt="AI Coach Avatar">
+                                        </video>
+                                    `;
+                                }
+
+                                showScreen('caddie-result-screen');
+                            } catch (fetchError) {
+                                clearTimeout(timeoutId);
+                                console.error('Caddie advice fetch error:', fetchError);
+
+                                // Show error screen or fallback
+                                alert(`Sorry, there was an error getting your caddie advice: ${fetchError.message}. Please try again.`);
+
+                                // Reset to choice screen
+                                showScreen('choice-screen');
+                            }
+                        } catch (error) {
+                            console.error('Error fetching caddie advice:', error);
+                        }
+                    }, 2000);
+                }
+            });
+
+            document.getElementById('record-swing-btn').addEventListener('click', async () => {
+                showScreen('swing-analyzing-screen');
+                // Simulate swing analysis
+                setTimeout(async () => {
+                    try {
+                        // Add timeout to fetch request
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout (faster with gpt-4o-mini)
+
+                        try {
+                            const response = await fetch('/api/swing-analysis', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(appState),
+                                signal: controller.signal
+                            });
+
+                            clearTimeout(timeoutId);
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                            }
+
+                            const data = await response.json();
+
+                            if (data.error) {
+                                throw new Error(data.message || data.error);
+                            }
+
+                            document.getElementById('swing-result-name').textContent = `Okay ${appState.userName}, I've analyzed your swing.`;
+                            document.getElementById('swing-feedback').textContent = data.feedback;
+
+                            // Handle HeyGen avatar video
+                            if (data.avatarVideoUrl && data.avatarVideoUrl !== 'https://example.com/avatar-video.mp4') {
+                                const avatarContainer = document.getElementById('swing-avatar-container');
+                                avatarContainer.innerHTML = `
+                                    <video autoplay muted loop playsinline class="w-full h-full object-cover">
+                                        <source src="${data.avatarVideoUrl}" type="video/mp4">
+                                        <img src="Golf Coach.png" class="w-full h-full object-cover" alt="AI Coach Avatar">
+                                    </video>
+                                `;
+                            }
+
+                            showScreen('swing-result-screen');
+                        } catch (fetchError) {
+                            clearTimeout(timeoutId);
+                            console.error('Swing analysis fetch error:', fetchError);
+
+                            // Show error screen or fallback
+                            alert(`Sorry, there was an error analyzing your swing: ${fetchError.message}. Please try again.`);
+
+                            // Reset to choice screen
+                            showScreen('choice-screen');
+                        }
+                    } catch (error) {
+                        console.error('Error analyzing swing:', error);
+                    }
+                }, 3000);
+            });
+
+            // Voice input functionality
+            let recognition = null;
+            let currentInputField = null;
+
+            function initSpeechRecognition() {
+                if (!recognition) {
+                    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                    recognition.continuous = false;
+                    recognition.interimResults = false;
+                    recognition.lang = 'en-US';
+
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        if (currentInputField) {
+                            currentInputField.value = transcript;
+                        }
+                    };
+
+                    recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                    };
+
+                    recognition.onend = () => {
+                        currentInputField = null;
+                    };
+                }
+                return recognition;
+            }
+
+            function startVoiceInput(inputFieldId) {
+                if (recognition && recognition.continuous) {
+                    recognition.stop();
+                }
+                currentInputField = document.getElementById(inputFieldId);
+                currentInputField.focus();
+                const rec = initSpeechRecognition();
+                rec.start();
+            }
+
+            document.getElementById('voice-distance-btn').addEventListener('click', () => {
+                startVoiceInput('distance-input');
+            });
+
+            document.getElementById('voice-club-btn').addEventListener('click', () => {
+                startVoiceInput('club-input');
+            });
+        });
+    </script>
+</body>
+</html>

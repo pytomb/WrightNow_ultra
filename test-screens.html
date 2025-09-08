@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Visibility Test</title>
+    <style>
+        .container {
+            position: relative;
+            width: 400px;
+            height: 600px;
+            border: 2px solid black;
+            margin: 20px auto;
+        }
+        .screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 20px;
+            border: 2px solid red;
+        }
+        .screen.active {
+            display: flex;
+        }
+        
+        #screen1 { background: lightblue; }
+        #screen2 { background: lightgreen; }
+        #screen3 { background: lightcoral; }
+    </style>
+</head>
+<body>
+    <h1>Screen Visibility Test</h1>
+    
+    <div class="container">
+        <div id="screen1" class="screen active">
+            <h2>Screen 1 (Active)</h2>
+            <p>This screen should be visible</p>
+            <button onclick="showScreen('screen2')">Go to Screen 2</button>
+        </div>
+        
+        <div id="screen2" class="screen">
+            <h2>Screen 2</h2>
+            <p>This screen should be hidden initially</p>
+            <button onclick="showScreen('screen3')">Go to Screen 3</button>
+        </div>
+        
+        <div id="screen3" class="screen">
+            <h2>Screen 3</h2>
+            <p>This screen should be hidden initially</p>
+            <button onclick="showScreen('screen1')">Go to Screen 1</button>
+        </div>
+    </div>
+    
+    <div>
+        <h3>Manual Tests:</h3>
+        <button onclick="showScreen('screen1')">Show Screen 1</button>
+        <button onclick="showScreen('screen2')">Show Screen 2</button>
+        <button onclick="showScreen('screen3')">Show Screen 3</button>
+    </div>
+    
+    <div id="debug-info">
+        <h3>Debug Info:</h3>
+        <pre id="debug-output"></pre>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            // Remove active class from all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            // Add active class to target screen
+            document.getElementById(screenId).classList.add('active');
+            
+            updateDebugInfo();
+        }
+        
+        function updateDebugInfo() {
+            const screens = document.querySelectorAll('.screen');
+            const debugInfo = Array.from(screens).map(screen => {
+                const styles = window.getComputedStyle(screen);
+                return {
+                    id: screen.id,
+                    hasActiveClass: screen.classList.contains('active'),
+                    display: styles.display,
+                    position: styles.position,
+                    zIndex: styles.zIndex,
+                    visibility: styles.visibility,
+                    opacity: styles.opacity,
+                    offsetWidth: screen.offsetWidth,
+                    offsetHeight: screen.offsetHeight
+                };
+            });
+            
+            document.getElementById('debug-output').textContent = JSON.stringify(debugInfo, null, 2);
+        }
+        
+        // Initial debug info
+        window.onload = () => updateDebugInfo();
+    </script>
+</body>
+</html>
