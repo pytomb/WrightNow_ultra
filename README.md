@@ -2,6 +2,8 @@
 
 A sophisticated AI-powered golf coaching application that provides personalized advice, swing analysis, and course-specific recommendations.
 
+**Latest Update**: Added tee selection feature with automatic distance calculation and Vercel deployment configuration.
+
 ## Features
 
 - **Personalized AI Coaching**: Uses OpenAI GPT-4o-mini for fast, intelligent golf advice
